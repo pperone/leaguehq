@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+
+{% block title %}
+    LeagueHQ | The home of your fantasy league
+{% endblock %}
+
+{% block content %}
+    <form action="league/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="go to league" class="button">
+    </form>
+{% endblock %}

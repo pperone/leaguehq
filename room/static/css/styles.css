@@ -1,0 +1,58 @@
+body {
+  background-color: #035531;
+}
+
+#twitter-widget-holder {
+  overflow-y: scroll;
+  max-height:200px;
+  max-width:320px;
+  padding:20px;
+  background:#fff;
+  border-radius:3px;
+  box-shadow:2px 2px 3px rgba(0,0,0,.1);
+}
+
+.dividerline {
+  background-color: gray;
+  height: 2px;
+}
+
+.standingsTable {
+  font-size: 0.8em;
+}
+
+.tableRow {
+  height: 50px;
+  color: white;
+}
+
+.tableRowTop {
+  height: 50px;
+  font-weight: bold;
+  color: gray;
+}
+
+.team {
+  font-weight: bold;
+  width: 50%;
+}
+
+.teamName {
+  font-weight: bold;
+}
+
+.plwl {
+    width: 30px;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+::-webkit-scrollbar-track {
+    background: #CCC;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
