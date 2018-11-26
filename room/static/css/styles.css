@@ -1,4 +1,5 @@
 body {
+  color: white;
   background-color: #035531;
 }
 
@@ -12,8 +13,12 @@ body {
   box-shadow:2px 2px 3px rgba(0,0,0,.1);
 }
 
+.firstCol {
+  min-width: 66%;
+}
+
 .dividerline {
-  background-color: gray;
+  background-color: #01351e;
   height: 2px;
 }
 
@@ -29,7 +34,6 @@ body {
 .tableRowTop {
   height: 50px;
   font-weight: bold;
-  color: gray;
 }
 
 .team {

@@ -24,7 +24,7 @@
   <body>
     <!--Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container">
+      <div class="container justify-content-start">
         <a class="navbar-brand" href="#"><img src="{% static 'img/lhq.svg' %}" width="200" height="37"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -48,11 +48,12 @@
     <!--Content-->
     <div class="container">
       <div class="row .row-eq-height">
-        <div class="col">
+        <div class="col firstCol">
           <div class="row">
             <h1>{{ leagueName }}</h1>
           </div>
           <div class="row">
+            <h5>Since {{ firstSeason }}</h5>
           </div>
         </div>
         <div class="col-sm">
