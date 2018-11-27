@@ -3,6 +3,52 @@ body {
   background-image: linear-gradient(to top right, rgb(14,58,39), rgb(37,142,118));
 }
 
+input {
+    -webkit-appearance: none;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 3px;
+    border-color: white;
+    width: 250px;
+    height: 50px;
+    border-width: thin;
+    color: white;
+    margin-bottom: 15px;
+}
+
+button {
+    -webkit-appearance: none;
+    padding: 10px;
+    background-color: white;
+    border-radius: 3px;
+    border-color: white;
+    font-weight: bold;
+    width: 250px;
+    height: 50px;
+    border-width: thin;
+    color: #0c3127;
+    margin-bottom: 15px;
+}
+
+textarea {
+    -webkit-appearance: none;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 3px;
+    border-color: white;
+    width: 250px;
+    height: 100px;
+    border-width: thin;
+    color: white;
+    margin-bottom: 15px;
+    resize: none;
+}
+
+::placeholder {
+    color: white;
+    opacity: 1;
+}
+
 #twitter-widget-holder {
   overflow-y: scroll;
   max-height:350px;
@@ -49,7 +95,7 @@ body {
 }
 
 .half {
-    height: 50%;
+    max-height: 50%;
 }
 
 .column {
