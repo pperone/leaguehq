@@ -19,12 +19,14 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- custom scrollbar plugin script -->
     <script src="http://malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <!-- custom charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
   </head>
 
   <body>
     <!--Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container justify-content-start">
+    <nav class="navbar navbar-expand-lg navbar-dark menu">
+      <div class="container">
         <a class="navbar-brand" href="#"><img src="{% static 'img/lhq.svg' %}" width="200" height="37"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -47,65 +49,168 @@
 
     <!--Content-->
     <div class="container">
-      <div class="row .row-eq-height">
-        <div class="col firstCol">
-          <div class="row">
-            <h1>{{ leagueName }}</h1>
-          </div>
-          <div class="row">
-            <h5>Since {{ firstSeason }}</h5>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="row standingsTitle">
-            <h3>Overall Standings</h3>
-          </div>
-          <div class="standingsTable">
-            <div class="row tableRowTop justify-content-between align-items-center">
-              <div class="plwl"><p>Pos.</p></div>
-              <div class="plwl"><p>Logo</p></div>
-              <div class="team justify-content-start"><p>Team</p></div>
-              <div class="plwl"><p>W</p></div>
-              <div class="plwl"><p>L</p></div>
-            </div>
-            {% for s in standings %}
-            <div class="row tableRow justify-content-between align-items-center">
-              <div class="plwl"><p>{{ s.standing }}</p></div>
-              <div class="plwl"><img src="{{ s.logo }}" height="35px"></div>
-              <div class="team justify-content-start"><p class="teamName">{{ s.name }}</p></div>
-              <div class="plwl"><p>{{ s.wins }}</p></div>
-              <div class="plwl"><p>{{ s.losses }}</p></div>
-            </div>
-            <div class="row dividerline">
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      <div class="row .row-eq-height">
+      <div class="row row-eq-height top-buffer">
         <div class="col">
-          <!--Chart will go here-->
+            <div class="leaguename">
+                <h1>{{ leagueName }}</h1>
+                <h5>Since {{ firstSeason }}</h5>
+            </div>
+            <div class="panel centered board">
+                <h3>Trash Talk</h3>
+                <p>Dont' hold anything back. Demolish your opponents, anonymously or not.</p>
+                <input type="text" placeholder="anonymous"></input>
+                <br>
+                <input type="text" placeholder="message"></input>
+                <br>
+                <br>
+                <button type="submit">post</button>
+            </div>
+        </div>
+        <div class="col">
+            <div class="panel-white centered half">
+                <h3>Humiliation</h3>
+                <img src="{{ lower.logo }}" width="75px">
+                <br>
+                <h5>{{ lower.name }}</h5>
+                <p>Scored 54.5 points on Week 10</p>
+            </div>
+            <div class="panel-transparent board-highlight half">
+                <h4>Heaven Cheesehead com um excelente record, como de costume. Hora de perder nos playoffs. #NoRings</h4>
+                <br>
+                <h6>Anonymous</h6>
+            </div>
+        </div>
+        <div class="col">
+            <div class="panel">
+                <div class="row standingsTitle">
+                  <h3>Overall Standings</h3>
+                </div>
+                <div class="standingsTable">
+                  <div class="row tableRowTop justify-content-between align-items-center">
+                    <div class="pos"><p>Pos.</p></div>
+                    <div class="lwl"><p>Logo</p></div>
+                    <div class="team justify-content-start"><p>Team</p></div>
+                    <div class="lwl"><p>W</p></div>
+                    <div class="lwl"><p>L</p></div>
+                  </div>
+                  {% for s in standings %}
+                  <div class="row tableRow justify-content-between align-items-center">
+                    <div class="pos"><p>{{ s.standing }}</p></div>
+                    <div class="lwl"><img src="{{ s.logo }}" height="35px"></div>
+                    <div class="team justify-content-start"><p class="teamName">{{ s.name }}</p></div>
+                    <div class="lwl"><p>{{ s.wins }}</p></div>
+                    <div class="lwl"><p>{{ s.losses }}</p></div>
+                  </div>
+                  <div class="row dividerline">
+                  </div>
+                  {% endfor %}
+                </div>
+            </div>
         </div>
       </div>
-      <div class="row .row-eq-height">
-        <div id="twitter-widget-holder">
-          <a class="twitter-timeline" href="https://twitter.com/pedroperone/lists/fantasy-football?ref_src=twsrc%5Etfw" data-width="280" data-heigth="280" data-chrome="noheader" data-tweet-limit="5"></a>
-          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        </div>
-        <div class="col-sm">
-          <!--Message Board will go here-->
-        </div>
-        <div class="col-sm">
-          <div class="row">
+      <div class="row row-eq-height top-buffer">
+        <div class="col">
+          <div class="panel centered">
+              <h3>Regular Season Scores</h3>
+              <canvas id="line-chart" width="800" height="250"></canvas>
           </div>
-          <div class="row">
+        </div>
+      </div>
+      <div class="row .row-eq-height top-buffer">
+        <div class="col">
+            <div id="twitter-widget-holder">
+              <a class="twitter-timeline" href="https://twitter.com/pedroperone/lists/fantasy-football?ref_src=twsrc%5Etfw" data-width="300" data-heigth="500" data-chrome="noheader" data-tweet-limit="5"></a>
+              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+        </div>
+        <div class="col">
+          <div class="panel centered">
+              <h3>Lord of the Rings</h3>
+              <br>
+              <img src="{{ winner.logo }}" width="75px">
+              <br>
+              <h5>{{ winner.name }}</h5>
+              <p>2 championships</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="panel-brown centered">
+              <h3>You Suck</h3>
+              <br>
+              <img src="{{ loser.logo }}" width="75px">
+              <br>
+              <h5>{{ loser.name }}</h5>
+              <p>{{ loser.championships }} championships</p>
           </div>
         </div>
       </div>
     </div>
 
+    <footer class="foot">
+        <div class="container">
+            <p>LeagueHQ. 2018 All rights reserved.</p>
+        </div>
+    </footer>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script>
+        new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+                data: {
+                labels: [1,2,3,4,5,6,7,8,9,10,11,12],
+                datasets: [{
+                    data: [86,114,106,106,107,111,133,221,183,278,111,133],
+                    label: "EMPB",
+                    borderColor: "#3e95cd",
+                    fill: false
+                  }, {
+                    data: [182,150,111,102,135,109,147,102,100,167,150,111],
+                    label: "HCH",
+                    borderColor: "#8e5ea2",
+                    fill: false
+                  }, {
+                    data: [168,170,178,190,203,276,108,47,75,234,170,178],
+                    label: "Bags",
+                    borderColor: "#3cba9f",
+                    fill: false
+                  }, {
+                    data: [40,120,110,116,124,138,74,167,108,84,124,138],
+                    label: "JLLE",
+                    borderColor: "#e8c3b9",
+                    fill: false
+                  }, {
+                    data: [86,53,72,92,97,126,82,172,132,133,126,82],
+                    label: "OCV",
+                    borderColor: "#c45850",
+                    fill: false
+                }, {
+                  data: [168,170,178,190,103,176,108,147,175,134,170,178],
+                  label: "MATT",
+                  borderColor: "#6cba9f",
+                  fill: false
+                }, {
+                  data: [40,20,10,16,24,38,74,167,138,184,170,178],
+                  label: "Val",
+                  borderColor: "#78c7b9",
+                  fill: false
+                }, {
+                  data: [86,88,92,82,87,126,82,172,112,133,92,82],
+                  label: "ING",
+                  borderColor: "#945890",
+                  fill: false
+                }
+                ]
+                },
+                options: {
+                title: {
+                  display: false,
+                  text: 'Season Scores'
+                }
+            }
+        });
+    </script>
   </body>
 </html>

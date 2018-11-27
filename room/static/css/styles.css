@@ -1,24 +1,76 @@
 body {
   color: white;
-  background-color: #035531;
+  background-image: linear-gradient(to top right, rgb(14,58,39), rgb(37,142,118));
 }
 
 #twitter-widget-holder {
   overflow-y: scroll;
-  max-height:200px;
-  max-width:320px;
+  max-height:350px;
+  max-width:100%;
   padding:20px;
   background:#fff;
   border-radius:3px;
   box-shadow:2px 2px 3px rgba(0,0,0,.1);
 }
 
-.firstCol {
-  min-width: 66%;
+.menu {
+    margin-bottom: 30px;
+}
+
+.top-buffer {
+    margin-top: 20px;
+}
+
+.centered {
+    text-align: center;
+}
+
+.panel {
+    padding: 30px;
+    background-color: rgba(0,0,0,0.5);
+    height: 100%;
+}
+
+.panel-transparent {
+    padding: 30px;
+    height: 100%;
+}
+
+.leaguename {
+    height: 25%;
+}
+
+.board {
+    height: 75%;
+}
+
+.board-highlight {
+    text-align: center;
+}
+
+.half {
+    height: 50%;
+}
+
+.column {
+    width: 50%;
+}
+
+.panel-white {
+    color: #7c7e82;
+    padding: 30px;
+    background-color: white;
+    height: 100%;
+}
+
+.panel-brown {
+    padding: 30px;
+    background-color: #605a51;
+    height: 100%;
 }
 
 .dividerline {
-  background-color: #01351e;
+  background-color: rgba(0,0,0,0.5);
   height: 2px;
 }
 
@@ -45,8 +97,17 @@ body {
   font-weight: bold;
 }
 
-.plwl {
+.pos {
+    text-align: center;
+    width: 20px;
+}
+
+.lwl {
     width: 30px;
+}
+.foot {
+    margin-top: 50px;
+    bottom: 0px;
 }
 
 ::-webkit-scrollbar {

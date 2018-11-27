@@ -60,7 +60,7 @@ def process_league(request):
                 print(teamId)
                 #############
 
-            return render(request, "base.html", {'leagueName': leagueName, 'leagueSize': leagueSize, 'standings': standings, 'firstSeason': firstSeason})
+            return render(request, "base.html", {'leagueName': leagueName, 'leagueSize': leagueSize, 'standings': standings, 'firstSeason': firstSeason, 'winner': teams[0], 'loser': teams[1], 'lower': teams[2]})
 
     else:
         form = SearchForm()
