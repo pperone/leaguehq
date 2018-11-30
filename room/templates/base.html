@@ -24,6 +24,9 @@
   </head>
 
   <body>
+    <!--Preloader-->
+    <div id="preloader">Loading...</div>
+
     <!--Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark menu">
       <div class="container">
@@ -32,17 +35,6 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Pricing</a>
-            </li>
-          </ul>
         </div>
       </div>
     </nav>
@@ -53,14 +45,26 @@
         <div class="col">
             <div class="leaguename">
                 <h1>{{ leagueName }}</h1>
-                <h5>Since {{ firstSeason }}</h5>
+                <h5>League Id: {{ leagueId }}  |  Since {{ firstSeason }}</h5>
             </div>
             <div class="panel centered board">
                 <h3>Trash Talk</h3>
                 <p>Dont' hold anything back. Demolish your opponents, anonymously or not.</p>
-                <input type="text" placeholder="anonymous"></input>
-                <textarea placeholder="message"></textarea>
-                <button type="submit">post</button>
+                <form>
+                    <div>
+                        <div class="form-group">
+                          <input
+                            type="text"
+                            placeholder="Anonymous">
+                          <textarea
+                            placeholder="Message"
+                            required="required"
+                            rows="3">
+                          </textarea>
+                          <button type="submit">post</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="col">
@@ -70,9 +74,9 @@
                 <img src="{{ lower.logo }}" width="75px">
                 <br>
                 <h5>{{ lower.name }}</h5>
-                <p>Scored 54.5 points on Week 10</p>
+                <p>Scored {{ lowest }} points on Week {{ lower.week }}</p>
             </div>
-            <div class="panel-transparent board-highlight half">
+            <div class="panel-transparent board-highlight half align-middle">
                 <h4>Heaven Cheesehead com um excelente record, como de costume. Hora de perder nos playoffs. #NoRings</h4>
                 <br>
                 <h6>Anonymous</h6>
@@ -114,32 +118,46 @@
           </div>
         </div>
       </div>
-      <div class="row .row-eq-height top-buffer">
+      <div class="row top-buffer">
         <div class="col">
-            <div id="twitter-widget-holder">
-              <a class="twitter-timeline" href="https://twitter.com/pedroperone/lists/fantasy-football?ref_src=twsrc%5Etfw" data-width="300" data-heigth="500" data-chrome="noheader" data-tweet-limit="5"></a>
-              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </div>
-        </div>
-        <div class="col">
-          <div class="panel centered">
+          <div id="panelwin" class="centered">
               <h3>Lord of the Rings</h3>
               <br>
+              {% for winner in winners %}
               <img src="{{ winner.logo }}" width="75px">
               <br>
               <h5>{{ winner.name }}</h5>
-              <p>2 championships</p>
+              <br>
+              <div class="row dividerline"></div>
+              <br>
+              {% endfor %}
+              <p><span class="count">{{ maxrings }}</span><br>championships</p>
+          </div>
+          <div id="twitter-widget-holder" class="top-buffer">
+              <a class="twitter-timeline" href="https://twitter.com/pedroperone/lists/fantasy-football?ref_src=twsrc%5Etfw" data-width="300" data-heigth="500" data-chrome="noheader" data-tweet-limit="5"></a>
+              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
           </div>
         </div>
         <div class="col">
           <div class="panel-brown centered">
               <h3>You Suck</h3>
               <br>
+              {% for loser in losers %}
               <img src="{{ loser.logo }}" width="75px">
               <br>
               <h5>{{ loser.name }}</h5>
-              <p>{{ loser.championships }} championships</p>
+              <br>
+              <div class="row dividerline"></div>
+              <br>
+              {% endfor %}
+              <p><span class="count">{{ minrings }}</span><br>championships</p>
           </div>
+        </div>
+        <div class="col">
+            <div id="messageboard" class="panel-transparent centered">
+                <h3> Trash Talk </h3>
+            </div>
+        </div>
         </div>
       </div>
     </div>
@@ -153,13 +171,18 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
 
     <script>
         new Chart(document.getElementById("line-chart"), {
             type: 'line',
                 data: {
                 labels: [1,2,3,4,5,6,7,8,9,10,11,12],
-                datasets: [{
+                datasets: [
+                  {
                     data: [86,114,106,106,107,111,133,221,183,278,111,133],
                     label: "EMPB",
                     borderColor: "#3e95cd",
@@ -208,6 +231,12 @@
                   text: 'Season Scores'
                 }
             }
+        });
+    </script>
+
+    <script type="text/javascript">
+        jQuery(window).load(function() {
+            jQuery("#preloader").remove();
         });
     </script>
   </body>

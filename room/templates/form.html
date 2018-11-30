@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <form action="league/" method="post">
+    <form action="/" method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="go to league" class="button">

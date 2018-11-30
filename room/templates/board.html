@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="messageboard">
+    <h5> Trash Talk </h5>
+    <br>
+    <ul>
+        <li v-for="message in messages">
+            <p>[[ message.body ]]</p>
+            <p>[[ message.name ]]  |  [[ message.datetime ]]</p>
+        </li>
+    </ul>
+</div>
+
+<script>
+    import axios from 'axios'
+
+    new Vue({
+      delimiters: ['[[', ']]'],
+      el: '#messageboard',
+      data: {
+          return {
+              messages: []
+          }
+      },
+      methods: {
+          getTasks() {
+            axios({
+                method:'get',
+                url: 'http://127.0.0.1:8000/board/',
+            }).then(response => this.messages = response.data);
+        }
+      }
+    })
+</script>
+{% endblock %}

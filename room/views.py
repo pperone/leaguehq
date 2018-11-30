@@ -5,8 +5,10 @@ from bs4 import BeautifulSoup
 
 from django.shortcuts import render
 from django.template import RequestContext
-from .models import League, Player, Board
+from .models import Board
 from .forms import SearchForm
+from .serializers import BoardSerializer
+from rest_framework import viewsets
 
 
 # Handles request and retrieves league info to populate page
@@ -55,12 +57,67 @@ def process_league(request):
             seasonsLength = len(seasons)
             firstSeason = seasons[seasonsLength - 1]
 
-            for i in range(1, seasonsLength - 1):
+            for i in range(1, seasonsLength):
                 teamId = get_winner(seasons[i], league)
-                print(teamId)
-                #############
+                for team in teams:
+                    if team['id'] == teamId:
+                        team['championships'] += 1
 
-            return render(request, "base.html", {'leagueName': leagueName, 'leagueSize': leagueSize, 'standings': standings, 'firstSeason': firstSeason, 'winner': teams[0], 'loser': teams[1], 'lower': teams[2]})
+            amountrings = []
+            for team in teams:
+                amountrings.append(team['championships'])
+
+            maxrings = max(amountrings)
+            minrings = min(amountrings)
+
+            winners = []
+            losers = []
+            for team in teams:
+                winner = {}
+                if team['championships'] == maxrings:
+                    winner['name'] = team['name']
+                    winner['logo'] = team['logo']
+                    winners.append(winner)
+                loser = {}
+                if team['championships'] == minrings:
+                    loser['name'] = team['name']
+                    loser['logo'] = team['logo']
+                    losers.append(loser)
+
+            lowest = 300
+            for w in range(1, 12):
+                s = requests.get('http://games.espn.com/ffl/api/v2/scoreboard',
+                    params={'leagueId': league, 'seasonId': year, 'matchupPeriodId': w})
+                scoreSet = s.json()
+
+                for m in range(0, 4):
+                    for t in range(0, 2):
+                        score = scoreSet['scoreboard']['matchups'][m]['teams'][t]['score']
+                        if score < lowest:
+                            lowest = score
+                            lowestWeek = w
+                            lowestId = scoreSet['scoreboard']['matchups'][m]['teams'][t]['teamId']
+
+            lower = {}
+            for team in teams:
+                if team['id'] == lowestId:
+                    lower['name'] = team['name']
+                    lower['logo'] = team['logo']
+                    lower['week'] = w - 1
+
+            return render(request, "base.html", {
+                'leagueId': league,
+                'leagueName': leagueName,
+                'leagueSize': leagueSize,
+                'standings': standings,
+                'firstSeason': firstSeason,
+                'winners': winners,
+                'losers': losers,
+                'lower': lower,
+                'lowest': lowest,
+                'maxrings': maxrings,
+                'minrings': minrings
+            })
 
     else:
         form = SearchForm()
@@ -101,3 +158,9 @@ def get_winner(season, leagueId):
 # Assigns past won championships to teams
 def populate_championships():
     pass
+
+
+# Viewsets for API endpoints
+class BoardViewSet(viewsets.ModelViewSet):
+    queryset = Board.objects.all()
+    serializer_class = BoardSerializer
