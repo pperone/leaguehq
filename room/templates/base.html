@@ -21,20 +21,26 @@
     <script src="http://malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
     <!-- custom charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script>
+        function myFunction(x) {
+            x.classList.toggle("change");
+        }
+    </script>
   </head>
 
   <body>
     <!--Preloader-->
-    <div id="preloader">Loading...</div>
+
 
     <!--Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark menu">
-      <div class="container">
-        <a class="navbar-brand" href="#"><img src="{% static 'img/lhq.svg' %}" width="200" height="37"></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="container justify-content-right"
+            <a class="navbar-brand" href="#"><img src="{% static 'img/lhq.svg' %}" width="200" height="37"></a>
+        <div class="menubox align-middle" onclick="myFunction(this)">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
         </div>
       </div>
     </nav>
@@ -45,7 +51,7 @@
         <div class="col">
             <div class="leaguename">
                 <h1>{{ leagueName }}</h1>
-                <h5>League Id: {{ leagueId }}  |  Since {{ firstSeason }}</h5>
+                <h6>League Id: {{ leagueId }}  |  Since {{ firstSeason }}</h6>
             </div>
             <div class="panel centered board">
                 <h3>Trash Talk</h3>
@@ -83,7 +89,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="panel">
+            <div class="panel centered">
                 <div class="row standingsTitle">
                   <h3>Overall Standings</h3>
                 </div>
@@ -103,8 +109,10 @@
                     <div class="lwl"><p>{{ s.wins }}</p></div>
                     <div class="lwl"><p>{{ s.losses }}</p></div>
                   </div>
-                  <div class="row dividerline">
-                  </div>
+                    {% if forloop.counter < standings|length %}
+                      <div class="row dividerline">
+                      </div>
+                    {% endif %}
                   {% endfor %}
                 </div>
             </div>
@@ -134,7 +142,7 @@
               <p><span class="count">{{ maxrings }}</span><br>championships</p>
           </div>
           <div id="twitter-widget-holder" class="top-buffer">
-              <a class="twitter-timeline" href="https://twitter.com/pedroperone/lists/fantasy-football?ref_src=twsrc%5Etfw" data-width="300" data-heigth="500" data-chrome="noheader" data-tweet-limit="5"></a>
+              <a class="twitter-timeline" href="https://twitter.com/pedroperone/lists/fantasy-football?ref_src=twsrc%5Etfw" data-width="300" data-heigth="600" data-chrome="noheader" data-tweet-limit="5"></a>
               <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
           </div>
         </div>
@@ -168,59 +176,84 @@
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.min.js"
-      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-      crossorigin="anonymous"></script>
 
     <script>
+        teamScores = [];
+        counter = 0;
+
+        for(let w = 1; w <= 12; w++) {
+            var url = new URL('https://games.espn.com/ffl/api/v2/scoreboard')
+            var params = {leagueId:1002885, seasonId:2018, matchupPeriodId:w}
+            url.search = new URLSearchParams(params)
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                var scores = data;
+                for (let m = 0; m < 4; m++) {
+                    for (let t = 0; t < 2; t++) {
+                        var ts = {};
+                        var week = w;
+                        ts['teamAbbrev'] = scores['scoreboard']['matchups'][m]['teams'][t]['team']['teamAbbrev'];
+                        ts['week'] = w;
+                        ts['scores'] = scores['scoreboard']['matchups'][m]['teams'][t]['score'];
+                        teamScores.push(ts);
+                    }
+                }
+            })
+        }
+
+        setTimeout(function afterEightSeconds() {
+            sortedTS = teamScores.sort(function(obj1, obj2) {
+                return obj1.week - obj2.week;
+            });
+        }, 8000)
+
         new Chart(document.getElementById("line-chart"), {
             type: 'line',
                 data: {
                 labels: [1,2,3,4,5,6,7,8,9,10,11,12],
                 datasets: [
                   {
-                    data: [86,114,106,106,107,111,133,221,183,278,111,133],
-                    label: "EMPB",
-                    borderColor: "#3e95cd",
+                    data: teamScores[0].scores,
+                    label: teamScores[0].teamAbbrev,
+                    borderColor: "#34D0E5",
                     fill: false
                   }, {
                     data: [182,150,111,102,135,109,147,102,100,167,150,111],
                     label: "HCH",
-                    borderColor: "#8e5ea2",
+                    borderColor: "#CEC38C",
                     fill: false
                   }, {
                     data: [168,170,178,190,203,276,108,47,75,234,170,178],
                     label: "Bags",
-                    borderColor: "#3cba9f",
+                    borderColor: "#DDAB82",
                     fill: false
                   }, {
                     data: [40,120,110,116,124,138,74,167,108,84,124,138],
                     label: "JLLE",
-                    borderColor: "#e8c3b9",
+                    borderColor: "#C9FF8C",
                     fill: false
                   }, {
                     data: [86,53,72,92,97,126,82,172,132,133,126,82],
                     label: "OCV",
-                    borderColor: "#c45850",
+                    borderColor: "#ACA9D3",
                     fill: false
                 }, {
                   data: [168,170,178,190,103,176,108,147,175,134,170,178],
                   label: "MATT",
-                  borderColor: "#6cba9f",
+                  borderColor: "#C9C9C9",
                   fill: false
                 }, {
                   data: [40,20,10,16,24,38,74,167,138,184,170,178],
                   label: "Val",
-                  borderColor: "#78c7b9",
+                  borderColor: "#FFF47C",
                   fill: false
                 }, {
                   data: [86,88,92,82,87,126,82,172,112,133,92,82],
                   label: "ING",
-                  borderColor: "#945890",
+                  borderColor: "#DDA1BC",
                   fill: false
                 }
                 ]
@@ -231,12 +264,6 @@
                   text: 'Season Scores'
                 }
             }
-        });
-    </script>
-
-    <script type="text/javascript">
-        jQuery(window).load(function() {
-            jQuery("#preloader").remove();
         });
     </script>
   </body>
