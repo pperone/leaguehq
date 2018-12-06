@@ -5,10 +5,13 @@ from bs4 import BeautifulSoup
 
 from django.shortcuts import render
 from django.template import RequestContext
+from django.http import HttpResponse
+from django.core import serializers
 from .models import Board
 from .forms import SearchForm
 from .serializers import BoardSerializer
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 
 # Handles request and retrieves league info to populate page
@@ -107,6 +110,8 @@ def process_league(request):
                     lower['logo'] = team['logo']
                     lower['week'] = w - 1
 
+            allmessages = get_messages(league)
+
             return render(request, "base.html", {
                 'leagueId': league,
                 'leagueName': leagueName,
@@ -119,7 +124,8 @@ def process_league(request):
                 'lower': lower,
                 'lowest': lowest,
                 'maxrings': maxrings,
-                'minrings': minrings
+                'minrings': minrings,
+                'messages': allmessages
             })
 
     else:
@@ -220,6 +226,8 @@ def with_league(request, lid):
                 lower['logo'] = team['logo']
                 lower['week'] = w - 1
 
+        allmessages = get_messages(league)
+
         return render(request, "base.html", {
             'leagueId': league,
             'leagueName': leagueName,
@@ -232,7 +240,8 @@ def with_league(request, lid):
             'lower': lower,
             'lowest': lowest,
             'maxrings': maxrings,
-            'minrings': minrings
+            'minrings': minrings,
+            'messages': allmessages
         })
 
 
@@ -261,7 +270,28 @@ def get_winner(season, leagueId):
     return leagueSet['leaguesettings']['finalCalculatedRanking'][0]
 
 
+# Retrieve past winners
+def get_messages(leagueId):
+    qs = Board.objects.all()
+    ordered = qs.order_by('-id')
+    return ordered
+
+
 # Viewsets for API endpoints
 class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
+
+    @action(methods=['get'], detail=True)
+    def queryforleague(self, request, pk):
+        queryset = Board.objects.filter(leagueId=pk)
+        serialized_queryset = serializers.serialize('json', queryset)
+        return HttpResponse(serialized_queryset)
+
+    @action(methods=['post'], detail=True)
+    def postonleague(self, request, pk):
+        name = request.POST['namefield']
+        text = request.POST['textarea']
+        message = Board(leagueId=pk, name=name, body=text)
+        message.save()
+        return HttpResponse(with_league(request, pk))

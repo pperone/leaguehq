@@ -21,6 +21,8 @@
     <script src="http://malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
     <!-- custom charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <!-- Vue.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
     <script>
         function myFunction(x) {
@@ -56,17 +58,18 @@
             <div class="panel centered board">
                 <h3>Trash Talk</h3>
                 <p>Dont' hold anything back. Demolish your opponents, anonymously or not.</p>
-                <form>
+                <form id="trashtalk" action="board/{{ leagueId }}/postonleague/" method="post">
+                    {% csrf_token %}
                     <div>
                         <div class="form-group">
+                          <textarea
+                              placeholder="message"
+                              required="required"
+                              rows="3">
+                          </textarea>
                           <input
                             type="text"
-                            placeholder="Anonymous">
-                          <textarea
-                            placeholder="Message"
-                            required="required"
-                            rows="3">
-                          </textarea>
+                            placeholder="anonymous">
                           <button type="submit">post</button>
                         </div>
                     </div>
@@ -75,22 +78,24 @@
         </div>
         <div class="col">
             <div class="panel-white centered half">
-                <h3>Humiliation</h3>
+                <h3>{{ year }}'s Humiliation</h3>
                 <br>
                 <img src="{{ lower.logo }}" width="75px">
                 <br>
                 <h5>{{ lower.name }}</h5>
                 <p>Scored {{ lowest }} points on Week {{ lower.week }}</p>
             </div>
-            <div class="panel-transparent board-highlight half align-middle">
-                <h4>Heaven Cheesehead com um excelente record, como de costume. Hora de perder nos playoffs. #NoRings</h4>
-                <br>
-                <h6>Anonymous</h6>
+            <div id ="app" class="panel-transparent board-highlight half align-middle">
+                <div class="hlcont">
+                    <h4 id="highlight-body"></h4>
+                    <br>
+                    <h6 id="highlight-name"></h6>
+                </div>
             </div>
         </div>
         <div class="col">
-            <div class="panel centered">
-                <div class="row standingsTitle">
+            <div class="panel">
+                <div class="row standingsTitle centered">
                   <h3>Overall Standings</h3>
                 </div>
                 <div class="standingsTable">
@@ -164,11 +169,26 @@
         <div class="col">
             <div id="messageboard" class="panel-transparent centered">
                 <h3> Trash Talk </h3>
+                {% for message in messages %}
+                    {% if forloop.counter|divisibleby:2 %}
+                    <div class="triangle-right">
+                        <h4>{{ message.body }}</h4>
+                        <h6>{{ message.name }}</h6>
+                    </div>
+                    {% else %}
+                    <div class="triangle-left">
+                        <h4>{{ message.body }}</h4>
+                        <h6>{{ message.name }}</h6>
+                    </div>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
         </div>
       </div>
     </div>
+
+    <p id="leagueId">{{ leagueId }}</p>
 
     <footer class="foot">
         <div class="container">
@@ -178,14 +198,41 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
 
     <script>
+        var lid = parseInt($("#leagueId").text());
+        var str = 'http://127.0.0.1:8000/board/'+ lid +'/queryforleague/';
+        var url = new URL(str)
+        var messages = [];
+        var l = 0;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                d = data;
+                for(let i = 0; i < d.length; i++) {
+                    messages.push(d[i]);
+                }
+            })
+
+        setTimeout(function afterSixSeconds() {
+            l = messages.length - 1;
+            $("#highlight-body").text(messages[l].fields.body);
+            $("#highlight-name").text(messages[l].fields.name);
+        }, 6000)
+    </script>
+
+    <script>
+        var lid = parseInt($("#leagueId").text());
+        var year = new Date().getFullYear();
         teamScores = [];
         counter = 0;
 
         for(let w = 1; w <= 12; w++) {
             var url = new URL('https://games.espn.com/ffl/api/v2/scoreboard')
-            var params = {leagueId:1002885, seasonId:2018, matchupPeriodId:w}
+            var params = {leagueId:lid, seasonId:year, matchupPeriodId:w}
             url.search = new URLSearchParams(params)
             fetch(url)
             .then(response => response.json())
@@ -204,67 +251,102 @@
             })
         }
 
+        var sortedTS = [];
+        var finalSort = [];
+
         setTimeout(function afterEightSeconds() {
             sortedTS = teamScores.sort(function(obj1, obj2) {
                 return obj1.week - obj2.week;
             });
         }, 8000)
 
-        new Chart(document.getElementById("line-chart"), {
-            type: 'line',
-                data: {
-                labels: [1,2,3,4,5,6,7,8,9,10,11,12],
-                datasets: [
-                  {
-                    data: teamScores[0].scores,
-                    label: teamScores[0].teamAbbrev,
-                    borderColor: "#34D0E5",
-                    fill: false
-                  }, {
-                    data: [182,150,111,102,135,109,147,102,100,167,150,111],
-                    label: "HCH",
-                    borderColor: "#CEC38C",
-                    fill: false
-                  }, {
-                    data: [168,170,178,190,203,276,108,47,75,234,170,178],
-                    label: "Bags",
-                    borderColor: "#DDAB82",
-                    fill: false
-                  }, {
-                    data: [40,120,110,116,124,138,74,167,108,84,124,138],
-                    label: "JLLE",
-                    borderColor: "#C9FF8C",
-                    fill: false
-                  }, {
-                    data: [86,53,72,92,97,126,82,172,132,133,126,82],
-                    label: "OCV",
-                    borderColor: "#ACA9D3",
-                    fill: false
-                }, {
-                  data: [168,170,178,190,103,176,108,147,175,134,170,178],
-                  label: "MATT",
-                  borderColor: "#C9C9C9",
-                  fill: false
-                }, {
-                  data: [40,20,10,16,24,38,74,167,138,184,170,178],
-                  label: "Val",
-                  borderColor: "#FFF47C",
-                  fill: false
-                }, {
-                  data: [86,88,92,82,87,126,82,172,112,133,92,82],
-                  label: "ING",
-                  borderColor: "#DDA1BC",
-                  fill: false
+        setTimeout(function afterNineSeconds() {
+            function groupBy(collection, property) {
+                var i = 0, val, index,
+                    values = [], result = [];
+                for (; i < collection.length; i++) {
+                    val = collection[i][property];
+                    index = values.indexOf(val);
+                    if (index > -1)
+                        result[index].push(collection[i]);
+                    else {
+                        values.push(val);
+                        result.push([collection[i]]);
+                    }
                 }
-                ]
-                },
-                options: {
-                title: {
-                  display: false,
-                  text: 'Season Scores'
-                }
+                return result;
             }
-        });
+
+            var sor = groupBy(sortedTS, "teamAbbrev");
+
+            for(let n = 0; n < sor.length; n++) {
+                var obj = {};
+                obj['ab'] = sor[n][0].teamAbbrev;
+                var listsc = [];
+                for(let x = 0; x < sor[n].length; x++) {
+                    listsc.push(sor[n][x].scores);
+                }
+                obj['sc'] = listsc;
+                finalSort.push(obj);
+            }
+
+            new Chart(document.getElementById("line-chart"), {
+                type: 'line',
+                    data: {
+                    labels: [1,2,3,4,5,6,7,8,9,10,11,12],
+                    datasets: [
+                      {
+                        data: finalSort[0].sc,
+                        label: finalSort[0].ab,
+                        borderColor: "#34D0E5",
+                        fill: false
+                      }, {
+                        data: finalSort[1].sc,
+                        label: finalSort[1].ab,
+                        borderColor: "#CEC38C",
+                        fill: false
+                      }, {
+                        data: finalSort[2].sc,
+                        label: finalSort[2].ab,
+                        borderColor: "#DDAB82",
+                        fill: false
+                      }, {
+                        data: finalSort[3].sc,
+                        label: finalSort[3].ab,
+                        borderColor: "#C9FF8C",
+                        fill: false
+                      }, {
+                        data: finalSort[4].sc,
+                        label: finalSort[4].ab,
+                        borderColor: "#ACA9D3",
+                        fill: false
+                    }, {
+                        data: finalSort[5].sc,
+                        label: finalSort[5].ab,
+                      borderColor: "#C9C9C9",
+                      fill: false
+                    }, {
+                        data: finalSort[6].sc,
+                        label: finalSort[6].ab,
+                      borderColor: "#FFF47C",
+                      fill: false
+                    }, {
+                        data: finalSort[7].sc,
+                        label: finalSort[7].ab,
+                      borderColor: "#DDA1BC",
+                      fill: false
+                    }
+                    ]
+                    },
+                    options: {
+                    title: {
+                      display: false,
+                      text: 'Season Scores'
+                    }
+                }
+            });
+        }, 9000)
+
     </script>
   </body>
 </html>
