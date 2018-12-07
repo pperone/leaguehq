@@ -23,10 +23,10 @@ input {
     width: 250px;
     height: 50px;
     border-color: white;
-    border-width: thin;
+    border-width: 2px;
     color: white;
     margin-bottom: 20px;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 button {
@@ -97,7 +97,9 @@ textarea {
 }
 
 .indexform {
-    top: 40%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 .menu {
