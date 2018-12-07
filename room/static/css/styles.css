@@ -23,7 +23,7 @@ body {
     width: 250px;
     height: 50px;
     border-color: white;
-    border-width: thin;
+    border: solid 2px white;
     color: white;
     margin-bottom: 20px;
     margin-right: 10px;
@@ -100,6 +100,8 @@ textarea {
 .indexform {
     position: absolute;
     top: 40%;
+    left: 25%;
+    right: 25%;
     margin-left: auto;
 }
 
