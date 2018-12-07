@@ -27,6 +27,18 @@ button {
     color: #0c3127;
 }
 
+.button {
+    -webkit-appearance: none;
+    padding: 10px;
+    background-color: #00ffc3;
+    border-radius: 3px;
+    border: none;
+    font-weight: bold;
+    width: 250px;
+    height: 50px;
+    color: #0c3127;
+}
+
 textarea {
     -webkit-appearance: none;
     padding: 10px;
@@ -60,6 +72,18 @@ textarea {
 
 #hlcont {
 	padding-top: 20%;
+}
+
+.containerindex {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  text-align: center;
+  background-image: linear-gradient(to top right, rgb(14,58,39,0.7), rgb(37,142,118,0.7));
+}
+
+.indexform {
+    top: 40%;
 }
 
 .menu {

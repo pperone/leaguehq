@@ -1,4 +1,4 @@
 from django import forms
 
 class SearchForm(forms.Form):
-    league = forms.IntegerField(required=True)
+    league = forms.IntegerField(required=True, label='')
