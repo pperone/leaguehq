@@ -23,7 +23,7 @@ body {
     width: 250px;
     height: 50px;
     border-color: white;
-    border-width: 2px;
+    border-width: thin;
     color: white;
     margin-bottom: 20px;
     margin-right: 10px;
@@ -92,6 +92,7 @@ textarea {
   width: 100%;
   height: 100%;
   position: absolute;
+  justify-content: center;
   text-align: center;
   background-image: linear-gradient(to top right, rgb(14,58,39,0.7), rgb(37,142,118,0.7));
 }
@@ -99,6 +100,7 @@ textarea {
 .indexform {
     position: absolute;
     top: 40%;
+    margin-left: auto;
 }
 
 .menu {
