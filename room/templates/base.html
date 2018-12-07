@@ -201,26 +201,28 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
 
     <script>
-        var lid = parseInt($("#leagueId").text());
-        var str = 'https://leaguehouse.herokuapp.com/board/'+ lid +'/queryforleague/';
-        var url = new URL(str)
-        var messages = [];
-        var l = 0;
+        $(document).ready(function () {
+            var lid = parseInt($("#leagueId").text());
+            var str = 'https://leaguehouse.herokuapp.com/board/'+ lid +'/queryforleague/';
+            var url = new URL(str)
+            var messages = [];
+            var l = 0;
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                d = data;
-                for(let i = 0; i < d.length; i++) {
-                    messages.push(d[i]);
-                }
-            })
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    d = data;
+                    for(let i = 0; i < d.length; i++) {
+                        messages.push(d[i]);
+                    }
+                })
 
-        setTimeout(function afterSixSeconds() {
-            l = messages.length - 1;
-            $("#highlight-body").text(messages[l].fields.body);
-            $("#highlight-name").text(messages[l].fields.name);
-        }, 6000)
+            setTimeout(function afterSixSeconds() {
+                l = messages.length - 1;
+                $("#highlight-body").text(messages[l].fields.body);
+                $("#highlight-name").text(messages[l].fields.name);
+            }, 6000)
+        });
     </script>
 
     <script>
