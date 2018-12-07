@@ -69,11 +69,12 @@ def process_league(request):
             seasonsLength = len(seasons)
             firstSeason = seasons[seasonsLength - 1]
 
-            for i in range(1, seasonsLength):
-                teamId = get_winner(seasons[i], league)
-                for team in teams:
-                    if team['id'] == teamId:
-                        team['championships'] += 1
+            if seasonsLength > 1:
+                for i in range(1, seasonsLength):
+                    teamId = get_winner(seasons[i], league)
+                    for team in teams:
+                        if team['id'] == teamId:
+                            team['championships'] += 1
 
             amountrings = []
             for team in teams:
@@ -86,7 +87,7 @@ def process_league(request):
             losers = []
             for team in teams:
                 winner = {}
-                if team['championships'] == maxrings:
+                if team['championships'] == maxrings and team['championships'] > 0:
                     winner['name'] = team['name']
                     winner['logo'] = team['logo']
                     winners.append(winner)
@@ -191,11 +192,12 @@ def with_league(request, lid):
         seasonsLength = len(seasons)
         firstSeason = seasons[seasonsLength - 1]
 
-        for i in range(1, seasonsLength):
-            teamId = get_winner(seasons[i], league)
-            for team in teams:
-                if team['id'] == teamId:
-                    team['championships'] += 1
+        if seasonsLength > 1:
+            for i in range(1, seasonsLength):
+                teamId = get_winner(seasons[i], league)
+                for team in teams:
+                    if team['id'] == teamId:
+                        team['championships'] += 1
 
         amountrings = []
         for team in teams:
@@ -208,7 +210,7 @@ def with_league(request, lid):
         losers = []
         for team in teams:
             winner = {}
-            if team['championships'] == maxrings:
+            if team['championships'] == maxrings and team['championships'] > 0:
                 winner['name'] = team['name']
                 winner['logo'] = team['logo']
                 winners.append(winner)
