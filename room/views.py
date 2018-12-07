@@ -279,10 +279,14 @@ def scrape_for_seasons(leagueId):
 
 # Retrieve past winners
 def get_winner(season, leagueId):
+
     source = requests.get('http://games.espn.com/ffl/api/v2/leagueSettings', params={'leagueId': leagueId, 'seasonId': season})
     leagueSet = source.json()
 
-    return leagueSet['leaguesettings']['finalCalculatedRanking'][0]
+    try:
+        return leagueSet['leaguesettings']['finalCalculatedRanking'][0]
+    except KeyError:
+        return -1
 
 
 # Retrieve past winners
