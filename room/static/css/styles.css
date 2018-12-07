@@ -3,7 +3,7 @@ body {
   background-image: linear-gradient(to top right, rgb(14,58,39), rgb(37,142,118));
 }
 
-input {
+.baseinput {
     -webkit-appearance: none;
     padding: 10px;
     background-color: rgba(0,0,0,0.5);
@@ -98,8 +98,7 @@ textarea {
 
 .indexform {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 40%;
 }
 
 .menu {
