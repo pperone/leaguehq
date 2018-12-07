@@ -268,7 +268,10 @@ def scrape_for_seasons(leagueId):
 
     select = soup.find('select', id='seasonHistoryMenu')
 
-    options = select.find_all('option')
+    try:
+        options = select.find_all('option')
+    except AttributeError:
+        return 0
 
     seasons = []
     for option in options:
