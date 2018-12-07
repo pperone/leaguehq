@@ -39,7 +39,7 @@ def process_league(request):
             try:
                 leagueSize = leagueSet['leaguesettings']['size']
                 leagueName = leagueSet['leaguesettings']['name']
-            catch KeyError:
+            except KeyError:
                 return render(index.html)
 
             t = requests.get('http://games.espn.com/ffl/api/v2/teams',
@@ -161,7 +161,7 @@ def with_league(request, lid):
         try:
             leagueSize = leagueSet['leaguesettings']['size']
             leagueName = leagueSet['leaguesettings']['name']
-        catch KeyError:
+        except KeyError:
             return render(index.html)
 
         t = requests.get('http://games.espn.com/ffl/api/v2/teams',
