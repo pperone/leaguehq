@@ -85,7 +85,9 @@ textarea {
 }
 
 #hlcont {
-	padding-top: 20%;
+    position: relative;
+	top: 10%;
+    bottom: 10%;
 }
 
 .containerindex {
