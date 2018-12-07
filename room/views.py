@@ -271,7 +271,7 @@ def scrape_for_seasons(leagueId):
     try:
         options = select.find_all('option')
     except AttributeError:
-        return 0
+        return []
 
     seasons = []
     for option in options:
