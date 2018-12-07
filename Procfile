@@ -1,1 +1,1 @@
-web: gunicorn leaguehq.wsgi
+web: gunicorn LeagueHQ.wsgi
