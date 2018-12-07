@@ -67,7 +67,10 @@ def process_league(request):
 
             seasons = scrape_for_seasons(league)
             seasonsLength = len(seasons)
-            firstSeason = seasons[seasonsLength - 1]
+            if seasonsLength == 0:
+                firstSeason = year
+            else:
+                firstSeason = seasons[seasonsLength - 1]
 
             if seasonsLength > 1:
                 for i in range(1, seasonsLength):
