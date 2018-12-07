@@ -40,7 +40,7 @@ def process_league(request):
                 leagueSize = leagueSet['leaguesettings']['size']
                 leagueName = leagueSet['leaguesettings']['name']
             except KeyError:
-                return render(request, 'index.html')
+                return render(request, 'form.html', {'form': form})
 
             t = requests.get('http://games.espn.com/ffl/api/v2/teams',
                 params={'leagueId': league, 'seasonId': year})
@@ -162,7 +162,7 @@ def with_league(request, lid):
             leagueSize = leagueSet['leaguesettings']['size']
             leagueName = leagueSet['leaguesettings']['name']
         except KeyError:
-            return render(request, 'index.html')
+            return render(request, 'form.html', {'form': form})
 
         t = requests.get('http://games.espn.com/ffl/api/v2/teams',
             params={'leagueId': league, 'seasonId': year})
