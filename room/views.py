@@ -291,7 +291,7 @@ def get_winner(season, leagueId):
 
 # Retrieve past winners
 def get_messages(leagueId):
-    qs = Board.objects.filter(leagueId)
+    qs = Board.objects.filter(leagueId=leagueId)
     ordered = qs.order_by('-id')
     return ordered
 
