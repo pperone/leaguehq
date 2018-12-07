@@ -19,11 +19,11 @@ body {
     -webkit-appearance: none;
     padding: 10px;
     background-color: transparent;
-    border-radius: 3px;
+    border-radius: 5px;
     width: 250px;
     height: 50px;
     border-color: white;
-    border: solid 2px white;
+    border: solid 1px white;
     color: white;
     margin-bottom: 20px;
     margin-right: 10px;
@@ -45,7 +45,7 @@ button {
     -webkit-appearance: none;
     padding: 10px;
     background-color: #00ffc3;
-    border-radius: 3px;
+    border-radius: 5px;
     border: none;
     font-weight: bold;
     width: 250px;
@@ -84,8 +84,7 @@ textarea {
     display: none;
 }
 
-#hlcont {
-    position: absolute;
+.hlcont {
 	top: 10%;
     bottom: 10%;
 }
