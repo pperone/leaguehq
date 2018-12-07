@@ -85,7 +85,7 @@ textarea {
 }
 
 #hlcont {
-    position: relative;
+    position: absolute;
 	top: 10%;
     bottom: 10%;
 }
